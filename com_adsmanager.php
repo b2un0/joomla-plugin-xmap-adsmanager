@@ -119,9 +119,9 @@ final class xmap_com_adsmanager {
 			$node->changefreq = $params['entry_changefreq'];
 			$node->link = TRoute::_('index.php?option=com_adsmanager&view=details&id='.$item->id.'&catid='.$catid, false);
 
-			$xmap->printNode($node);    
-        }
-        
+			$xmap->printNode($node);
+		}
+		
 		$xmap->changeLevel(-1);
 	}
 }
