@@ -89,7 +89,6 @@ final class xmap_com_adsmanager {
 	}
 
 	private static function getEntries(&$xmap, &$parent, &$params, $catid) {
-		
 		$db = JFactory::getDbo();
 		
 		$query = $db->getQuery(true)

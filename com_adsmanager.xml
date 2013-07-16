@@ -77,6 +77,6 @@
         </fields>
     </config>
     <updateservers>
-		<server type="extension" priority="1" name="Xmap - AdsManager">http://www.z-index.net/en/joomla-xmap-plugins/xmap-adsmanager/updatestream.xml</server>
+        <server type="extension" priority="1" name="Xmap - AdsManager">http://www.z-index.net/en/joomla-xmap-plugins/xmap-adsmanager/updatestream.xml</server>
 	</updateservers>
 </extension>
