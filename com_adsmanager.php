@@ -117,7 +117,7 @@ final class xmap_com_adsmanager {
 			$node->browserNav = $parent->browserNav;
 			$node->priority = $params['entry_priority'];
 			$node->changefreq = $params['entry_changefreq'];
-			$node->link = TRoute::_('index.php?option=com_adsmanager&view=details&id='.$item->id.'&catid='.$catid, false);
+			$node->link = TRoute::_('index.php?option=com_adsmanager&view=details&id='.$row->id.'&catid='.$catid, false);
 
 			$xmap->printNode($node);
 		}
