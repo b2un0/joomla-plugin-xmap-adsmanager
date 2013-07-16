@@ -8,7 +8,7 @@
     <authorEmail>branko.wilhelm@gmail.com</authorEmail>
     <authorUrl>www.z-index.net</authorUrl>
     <version>@REVISION@</version>
-    <description>Add support for categories and files</description>
+    <description>Add support for categories and entries</description>
     <files>
         <filename plugin="com_adsmanager">com_adsmanager.php</filename>
         <filename>index.html</filename>
