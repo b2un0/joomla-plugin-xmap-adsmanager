@@ -74,7 +74,7 @@ final class xmap_com_adsmanager {
 			$node->browserNav = $parent->browserNav;
 			$node->priority = $params['category_priority'];
 			$node->changefreq = $params['category_changefreq'];
-			$node->link = TRoute::_('index.php?option=com_adsmanager&view=list&catid='.$row->id, false);
+			$node->link = TRoute::_('index.php?option=com_adsmanager&view=list&catid='.$row->id);
 			$node->pid = $row->parent;	
 			
 			if ($xmap->printNode($node) !== false) {
@@ -117,7 +117,7 @@ final class xmap_com_adsmanager {
 			$node->browserNav = $parent->browserNav;
 			$node->priority = $params['entry_priority'];
 			$node->changefreq = $params['entry_changefreq'];
-			$node->link = TRoute::_('index.php?option=com_adsmanager&view=details&id='.$row->id.'&catid='.$catid, false);
+			$node->link = TRoute::_('index.php?option=com_adsmanager&view=details&id='.$row->id.'&catid='.$catid);
 
 			$xmap->printNode($node);
 		}
