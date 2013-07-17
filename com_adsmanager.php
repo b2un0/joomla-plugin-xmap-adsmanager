@@ -13,7 +13,15 @@ require_once JPATH_SITE . '/components/com_adsmanager/lib/route.php';
 
 final class xmap_com_adsmanager {				
 
-	public function getTree(&$xmap, &$parent, &$params) {
+	private static $views = array('front', 'list');
+	
+	public static function getTree(&$xmap, &$parent, &$params) {
+		$uri = new JUri($parent->link);
+		
+		if(!in_array($uri->getVar('view'), self::$views)) {
+			return;
+		}
+		
 		$include_entries = JArrayHelper::getValue($params, 'include_entries', 1);
 		$include_entries = ($include_entries == 1 || ($include_entries == 2 && $xmap->view == 'xml') || ($include_entries == 3 && $xmap->view == 'html'));
 		
@@ -47,8 +55,15 @@ final class xmap_com_adsmanager {
 		$params['entry_priority'] = $priority;
 		$params['entry_changefreq'] = $changefreq;
 		
-		self::getCategoryTree($xmap, $parent, $params, 0);
-		return true;
+		switch($uri->getVar('view')) {
+			case 'front':
+				self::getCategoryTree($xmap, $parent, $params, 0);
+			break;
+			
+			case 'list':
+				self::getEntries($xmap, $parent, $params, $uri->getVar('catid'));
+			break;
+		}
 	}
 
 	private static function getCategoryTree(&$xmap, &$parent, &$params, $parent_id) {
