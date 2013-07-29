@@ -107,12 +107,12 @@ final class xmap_com_adsmanager {
 		$db = JFactory::getDbo();
 		
 		$query = $db->getQuery(true)
-		->select(array('a.id', 'a.ad_headline'))
-		->from('#__adsmanager_adcat AS c')
-		->join('INNER', '#__adsmanager_ads AS a ON (c.adid = a.id)')
-		->where('c.catid = ' . $db->Quote($catid))
-		->where('a.published = 1')
-		->order('a.id');
+				->select(array('a.id', 'a.ad_headline'))
+				->from('#__adsmanager_adcat AS c')
+				->join('INNER', '#__adsmanager_ads AS a ON (c.adid = a.id)')
+				->where('c.catid = ' . $db->Quote($catid))
+				->where('a.published = 1')
+				->order('a.id');
 		
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
