@@ -15,7 +15,7 @@ final class xmap_com_adsmanager {
 
 	private static $views = array('front', 'list');
 	
-	public static function getTree(XmapXmlDisplayer &$xmap, stdClass &$parent, array &$params) {
+	public static function getTree(XmapDisplayer &$xmap, stdClass &$parent, array &$params) {
 		$uri = new JUri($parent->link);
 		
 		if(!in_array($uri->getVar('view'), self::$views)) {
@@ -66,11 +66,11 @@ final class xmap_com_adsmanager {
 		}
 	}
 
-	private static function getCategoryTree(XmapXmlDisplayer &$xmap, stdClass &$parent, array &$params, $parent_id) {
+	private static function getCategoryTree(XmapDisplayer &$xmap, stdClass &$parent, array &$params, $parent_id) {
 		$db = JFactory::getDbo();
 		
 		$query = $db->getQuery(true)
-				->select(array('id', 'name', 'parent'))
+				->select(array('id', 'name'))
 				->from('#__adsmanager_categories')
 				->where('parent = ' . $db->quote($parent_id))
 				->where('published = 1')
@@ -90,7 +90,7 @@ final class xmap_com_adsmanager {
 			$node->priority = $params['category_priority'];
 			$node->changefreq = $params['category_changefreq'];
 			$node->link = TRoute::_('index.php?option=com_adsmanager&view=list&catid='.$row->id);
-			$node->pid = $row->parent;	
+			$node->link = self::fixLink($node->link);
 			
 			if ($xmap->printNode($node) !== false) {
 				self::getCategoryTree($xmap, $parent, $params, $row->id);
@@ -103,7 +103,7 @@ final class xmap_com_adsmanager {
 		$xmap->changeLevel(-1);
 	}
 
-	private static function getEntries(XmapXmlDisplayer &$xmap, stdClass &$parent, array &$params, $catid) {
+	private static function getEntries(XmapDisplayer &$xmap, stdClass &$parent, array &$params, $catid) {
 		$db = JFactory::getDbo();
 		
 		$query = $db->getQuery(true)
@@ -132,10 +132,18 @@ final class xmap_com_adsmanager {
 			$node->priority = $params['entry_priority'];
 			$node->changefreq = $params['entry_changefreq'];
 			$node->link = TRoute::_('index.php?option=com_adsmanager&view=details&id='.$row->id.'&catid='.$catid);
-
+			$node->link = self::fixLink($node->link);
+			
 			$xmap->printNode($node);
 		}
 		
 		$xmap->changeLevel(-1);
+	}
+	
+	private static function fixLink($link) {
+		$base = JUri::base(true);
+		$link = JString::str_ireplace($base, '', $link);
+		$link = JString::trim($link, '/');
+		return $link;
 	}
 }
