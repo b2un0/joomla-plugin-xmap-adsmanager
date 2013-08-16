@@ -68,11 +68,11 @@ final class xmap_com_adsmanager {
 		$db = JFactory::getDbo();
 		
 		$query = $db->getQuery(true)
-				->select(array('id', 'name'))
-				->from('#__adsmanager_categories')
-				->where('parent = ' . $db->quote($parent_id))
-				->where('published = 1')
-				->order('ordering');
+				->select(array('c.id', 'c.name'))
+				->from('#__adsmanager_categories AS c')
+				->where('c.parent = ' . $db->quote($parent_id))
+				->where('c.published = 1')
+				->order('c.ordering');
 		
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
@@ -102,6 +102,7 @@ final class xmap_com_adsmanager {
 
 	private static function getEntries(XmapDisplayer &$xmap, stdClass &$parent, array &$params, $catid) {
 		$db = JFactory::getDbo();
+		$now = JFactory::getDate()->toSql();
 		
 		$query = $db->getQuery(true)
 				->select(array('a.id', 'a.ad_headline'))
@@ -109,6 +110,8 @@ final class xmap_com_adsmanager {
 				->join('INNER', '#__adsmanager_ads AS a ON (c.adid = a.id)')
 				->where('c.catid = ' . $db->Quote($catid))
 				->where('a.published = 1')
+				->where('a.date_created <= ' . $db->quote($now))
+				->where('a.expiration_date >= ' .$db->quote(date('Y-m-d')))
 				->order('a.id');
 		
 		$db->setQuery($query);
