@@ -11,8 +11,6 @@ defined('_JEXEC') or die;
 
 final class xmap_com_adsmanager {
 
-	private static $lookup = array();
-
 	private static $views = array('front', 'list');
 	
 	public static function getTree(XmapDisplayer &$xmap, stdClass &$parent, array &$params) {
@@ -82,8 +80,6 @@ final class xmap_com_adsmanager {
 		$xmap->changeLevel(1);
 		
 		foreach($rows as $row){
-			$Itemid = self::findItemID('details', $row->id, $parent);
-			
 			$node = new stdclass;
 			$node->id = $parent->id;
 			$node->name = $row->name;
@@ -91,7 +87,7 @@ final class xmap_com_adsmanager {
 			$node->browserNav = $parent->browserNav;
 			$node->priority = $params['category_priority'];
 			$node->changefreq = $params['category_changefreq'];
-			$node->link = 'index.php?option=com_adsmanager&view=list&catid=' . $row->id . '&Itemid=' . $Itemid;
+			$node->link = 'index.php?option=com_adsmanager&view=list&catid=' . $row->id . '&Itemid=' . $parent->id;
 			
 			if ($xmap->printNode($node) !== false) {
 				self::getCategoryTree($xmap, $parent, $params, $row->id);
@@ -125,8 +121,6 @@ final class xmap_com_adsmanager {
 		$xmap->changeLevel(1);
 		
 		foreach($rows as $row) {
-			$Itemid = self::findItemID('details', $row->id, $parent);
-			
 			$node = new stdclass;
 			$node->id = $parent->id;
 			$node->name = $row->ad_headline;
@@ -134,65 +128,11 @@ final class xmap_com_adsmanager {
 			$node->browserNav = $parent->browserNav;
 			$node->priority = $params['entry_priority'];
 			$node->changefreq = $params['entry_changefreq'];
-			$node->link = 'index.php?option=com_adsmanager&view=details&id=' . $row->id . '&catid=' . $catid . '&Itemid=' . $Itemid;
+			$node->link = 'index.php?option=com_adsmanager&view=details&id=' . $row->id . '&catid=' . $catid . '&Itemid=' . $parent->id;
 			
 			$xmap->printNode($node);
 		}
 		
 		$xmap->changeLevel(-1);
-	}
-	
-	private static function findItemID($view, $id, stdClass &$parent) {
-		$menus = JFactory::getApplication()->getMenu('site');
-		$language = $menus->getItem($parent->id)->language;
-		
-		if(!isset(self::$lookup[$language])) {
-			self::$lookup[$language] = array();
-			
-			$component	= JComponentHelper::getComponent('com_adsmanager');
-			
-			$attributes = array('component_id');
-			$values = array($component->id);
-			
-			if($language != '*') {
-				$attributes[] = 'language';
-				$values[] = array($needles['language'], '*');
-			}
-			
-			$items = $menus->getItems($attributes, $values);
-			
-			foreach($items as $item) {
-				if(isset($item->query) && isset($item->query['view'])) {
-					$view = $item->query['view'];
-					if(!isset(self::$lookup[$language][$view])) {
-						self::$lookup[$language][$view] = array();
-					}
-					
-					if(isset($item->query['id'])) {
-						if(!isset(self::$lookup[$language][$view][$item->query['id']]) || $item->language != '*') {
-							self::$lookup[$language][$view][$item->query['id']] = $item->id;
-						}
-					}
-				}
-			}
-		}
-		
-		foreach($needles as $view => $id) {
-			if(isset(self::$lookup[$language][$view])) {
-				if(isset(self::$lookup[$language][$view][$id])) {
-					return self::$lookup[$language][$view][$id];
-				}
-			}
-		}
-		
-		foreach($needles as $view => $id) {
-			if(isset(self::$lookup[$language][$view])) {
-				if(isset(self::$lookup[$language][$view])) {
-					return self::$lookup[$language][$view];
-				}
-			}
-		}
-		
-		return $parent->id;
 	}
 }
