@@ -25,6 +25,11 @@ final class xmap_com_adsmanager {
 		
 		$params['include_entries'] = $include_entries;
 		
+		$include_expired_entries = JArrayHelper::getValue($params, 'include_expired_entries', 0);
+		$include_expired_entries = ($include_expired_entries == 1 || ($include_expired_entries == 2 && $xmap->view == 'xml') || ($include_expired_entries == 3 && $xmap->view == 'html'));
+		
+		$params['include_expired_entries'] = $include_expired_entries;
+		
 		$priority = JArrayHelper::getValue($params, 'category_priority', $parent->priority);
 		$changefreq = JArrayHelper::getValue($params, 'category_changefreq', $parent->changefreq);
 		
@@ -110,9 +115,12 @@ final class xmap_com_adsmanager {
 				->join('INNER', '#__adsmanager_ads AS a ON (c.adid = a.id)')
 				->where('c.catid = ' . $db->Quote($catid))
 				->where('a.published = 1')
-				->where('a.date_created <= ' . $db->quote($now))
-				->where('a.expiration_date >= ' .$db->quote(date('Y-m-d')))
 				->order('a.id');
+				
+		if(!$params['include_expired_entries']) {
+			$query->where('a.date_created <= ' . $db->quote($now));
+			$query->where('a.expiration_date >= ' .$db->quote(date('Y-m-d')));
+		}
 		
 		$db->setQuery($query);
 		$rows = $db->loadObjectList();
