@@ -2,8 +2,8 @@
 <project name="plg_xmap_com_adsmanager" basedir="." default="build">
 
     <target name="build">
-        <if>w
-            <not>
+        <if>
+        <not>
                 <isset property="path" />
             </not>
             <then>
