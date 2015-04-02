@@ -11,8 +11,14 @@ defined('_JEXEC') or die;
 
 class xmap_com_adsmanager
 {
+    /**
+     * @var array
+     */
     private static $views = array('front', 'list');
 
+    /**
+     * @var bool
+     */
     private static $enabled = false;
 
     public function __construct()
@@ -20,11 +26,17 @@ class xmap_com_adsmanager
         self::$enabled = JComponentHelper::isEnabled('com_adsmanager');
     }
 
-    public static function getTree(XmapDisplayer &$xmap, stdClass &$parent, array &$params)
+    /**
+     * @param XmapDisplayerInterface $xmap
+     * @param stdClass $parent
+     * @param array $params
+     */
+    public static function getTree($xmap, stdClass $parent, array &$params)
     {
         $uri = new JUri($parent->link);
 
-        if (!self::$enabled || !in_array($uri->getVar('view'), self::$views)) {
+        if (!self::$enabled || !in_array($uri->getVar('view'), self::$views))
+        {
             return;
         }
 
@@ -37,26 +49,31 @@ class xmap_com_adsmanager
         $params['category_priority'] = JArrayHelper::getValue($params, 'category_priority', $parent->priority);
         $params['category_changefreq'] = JArrayHelper::getValue($params, 'category_changefreq', $parent->changefreq);
 
-        if ($params['category_priority'] == -1) {
+        if ($params['category_priority'] == -1)
+        {
             $params['category_priority'] = $parent->priority;
         }
 
-        if ($params['category_changefreq'] == -1) {
+        if ($params['category_changefreq'] == -1)
+        {
             $params['category_changefreq'] = $parent->changefreq;
         }
 
         $params['entry_priority'] = JArrayHelper::getValue($params, 'entry_priority', $parent->priority);
         $params['entry_changefreq'] = JArrayHelper::getValue($params, 'entry_changefreq', $parent->changefreq);
 
-        if ($params['entry_priority'] == -1) {
+        if ($params['entry_priority'] == -1)
+        {
             $params['entry_priority'] = $parent->priority;
         }
 
-        if ($params['entry_changefreq'] == -1) {
+        if ($params['entry_changefreq'] == -1)
+        {
             $params['entry_changefreq'] = $parent->changefreq;
         }
 
-        switch ($uri->getVar('view')) {
+        switch ($uri->getVar('view'))
+        {
             case 'front':
                 self::getCategoryTree($xmap, $parent, $params, 0);
                 break;
@@ -67,7 +84,13 @@ class xmap_com_adsmanager
         }
     }
 
-    private static function getCategoryTree(XmapDisplayer &$xmap, stdClass &$parent, array &$params, $parent_id)
+    /**
+     * @param XmapDisplayerInterface $xmap
+     * @param stdClass $parent
+     * @param array $params
+     * @param int $parent_id
+     */
+    private static function getCategoryTree($xmap, stdClass $parent, array &$params, $parent_id)
     {
         $db = JFactory::getDbo();
 
@@ -83,7 +106,8 @@ class xmap_com_adsmanager
 
         $xmap->changeLevel(1);
 
-        foreach ($rows as $row) {
+        foreach ($rows as $row)
+        {
             $node = new stdclass;
             $node->id = $parent->id;
             $node->name = $row->name;
@@ -93,7 +117,8 @@ class xmap_com_adsmanager
             $node->changefreq = $params['category_changefreq'];
             $node->link = 'index.php?option=com_adsmanager&view=list&catid=' . $row->id . '&Itemid=' . $parent->id;
 
-            if ($xmap->printNode($node) !== false) {
+            if ($xmap->printNode($node) !== false)
+            {
                 self::getEntries($xmap, $parent, $params, $row->id);
             }
         }
@@ -101,11 +126,18 @@ class xmap_com_adsmanager
         $xmap->changeLevel(-1);
     }
 
-    private static function getEntries(XmapDisplayer &$xmap, stdClass &$parent, array &$params, $catid)
+    /**
+     * @param XmapDisplayerInterface $xmap
+     * @param stdClass $parent
+     * @param array $params
+     * @param $catid
+     */
+    private static function getEntries($xmap, stdClass $parent, array &$params, $catid)
     {
         self::getCategoryTree($xmap, $parent, $params, $catid);
 
-        if (!$params['include_entries']) {
+        if (!$params['include_entries'])
+        {
             return;
         }
 
@@ -120,7 +152,8 @@ class xmap_com_adsmanager
             ->where('a.published = 1')
             ->order('a.id');
 
-        if (!$params['include_expired_entries']) {
+        if (!$params['include_expired_entries'])
+        {
             $query->where('a.date_created <= ' . $db->quote($now));
             $query->where('a.expiration_date >= ' . $db->quote(date('Y-m-d')));
         }
@@ -128,13 +161,15 @@ class xmap_com_adsmanager
         $db->setQuery($query);
         $rows = $db->loadObjectList();
 
-        if (empty($rows)) {
+        if (empty($rows))
+        {
             return;
         }
 
         $xmap->changeLevel(1);
 
-        foreach ($rows as $row) {
+        foreach ($rows as $row)
+        {
             $node = new stdclass;
             $node->id = $parent->id;
             $node->name = $row->ad_headline;
