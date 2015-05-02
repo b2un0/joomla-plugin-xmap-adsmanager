@@ -18,6 +18,8 @@
     <languages folder="language">
         <language tag="en-GB">en-GB/en-GB.plg_xmap_com_adsmanager.ini</language>
         <language tag="en-GB">en-GB/en-GB.plg_xmap_com_adsmanager.sys.ini</language>
+        <language tag="fr-FR">fr-FR/fr-FR.plg_xmap_com_adsmanager.ini</language>
+        <language tag="fr-FR">fr-FR/fr-FR.plg_xmap_com_adsmanager.sys.ini</language>
     </languages>
     <config>
         <fields name="params">
